@@ -7,7 +7,7 @@ A customizable chat interface for LangGraph agents with Supabase authentication.
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/yourusername/cookie-cutter-agent-chat-ui.git
+git clone https://github.com/Swapnil-DevGeek/cookie-cutter-supabase-agent-chat.git
 cd cookie-cutter-agent-chat-ui
 ```
 
