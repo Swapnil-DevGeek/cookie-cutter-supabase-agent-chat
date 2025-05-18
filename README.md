@@ -1,3 +1,132 @@
+# Cookie-Cutter Agent Chat UI with Supabase
+
+A customizable chat interface for LangGraph agents with Supabase authentication.
+
+## Quick Setup
+
+### 1. Clone the repository
+
+```bash
+git clone https://github.com/yourusername/cookie-cutter-agent-chat-ui.git
+cd cookie-cutter-agent-chat-ui
+```
+
+### 2. Install dependencies
+
+```bash
+npm install
+# or
+yarn install
+# or
+pnpm install
+```
+
+### 3. Run the setup script
+
+```bash
+npm run setup
+# or
+yarn setup
+# or
+pnpm setup
+```
+
+The setup script will guide you through:
+- Creating a .env.local file
+- Setting up Supabase credentials
+- Basic UI customization
+- Authentication settings
+
+### 4. Run the development server
+
+```bash
+npm run dev
+# or
+yarn dev
+# or
+pnpm dev
+```
+
+Visit [http://localhost:3000](http://localhost:3000) to see your application.
+
+## Manual Configuration
+
+If you prefer to configure manually:
+
+1. Copy `.env.example` to `.env.local`
+2. Add your Supabase credentials to `.env.local`
+3. Edit `src/config.ts` to customize UI and features
+
+## Customization
+
+All customization is done through `src/config.ts`:
+
+```typescript
+// Edit this file to customize the application
+export const AUTH_CONFIG = {
+  // Authentication settings
+  REQUIRE_AUTH: true,
+  AUTH_PROVIDERS: { GOOGLE: true, GITHUB: true },
+};
+
+export const UI_CONFIG = {
+  // UI customization
+  APP_NAME: 'Agent Chat UI',
+  APP_DESCRIPTION: 'Your custom description',
+  COLORS: {
+    PRIMARY: 'purple',
+    SECONDARY: 'blue',
+    ACCENT: 'green',
+  },
+  // Button styling
+  BUTTONS: {
+    PRIMARY_BUTTON: 'default',
+    SECONDARY_BUTTON: 'outline',
+    CANCEL_BUTTON: 'secondary',
+  },
+  LOGO: {
+    USE_CUSTOM: false,
+    LIGHT: '/logo-light.svg',
+    DARK: '/logo-dark.svg',
+  },
+};
+
+export const FEATURES = {
+  // Enable/disable features
+  CHAT_HISTORY: true,
+  ARTIFACT_PANEL: true,
+  THREAD_NAMING: true,
+};
+```
+
+For detailed customization options, see [CUSTOMIZATION.md](CUSTOMIZATION.md).
+
+## Deployment
+
+For production, update your `.env.local` with:
+
+```
+# Supabase Configuration
+NEXT_PUBLIC_SUPABASE_URL=your-supabase-url
+NEXT_PUBLIC_SUPABASE_ANON_KEY=your-supabase-anon-key
+
+# LangGraph Configuration
+NEXT_PUBLIC_ASSISTANT_ID="agent"
+LANGGRAPH_API_URL="https://my-agent.default.us.langgraph.app"
+NEXT_PUBLIC_API_URL="https://my-website.com/api"
+LANGSMITH_API_KEY="lsv2_..."
+```
+
+Then build and deploy as a standard Next.js application.
+
+## License
+
+[MIT](LICENSE)
+
+## Acknowledgements
+
+This project is based on the [Agent Chat UI](https://github.com/langchain-ai/agent-chat-ui) by LangChain AI, modified to be a cookie-cutter template with central configuration.
+
 # Agent Chat UI
 
 Agent Chat UI is a Next.js application which enables chatting with any LangGraph server with a `messages` key through a chat interface.
