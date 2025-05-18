@@ -42,6 +42,7 @@ import {
   ArtifactTitle,
   useArtifactContext,
 } from "./artifact";
+import { UI_CONFIG, FEATURES } from "@/config";
 
 function StickyToBottomContent(props: {
   content: ReactNode;
@@ -110,7 +111,7 @@ function OpenGitHubRepo() {
 
 export function Thread() {
   const [artifactContext, setArtifactContext] = useArtifactContext();
-  const [artifactOpen, closeArtifact] = useArtifactOpen();
+  const [artifactOpen, setArtifactOpen] = useArtifactOpen();
 
   const [threadId, _setThreadId] = useQueryState("threadId");
   const [chatHistoryOpen, setChatHistoryOpen] = useQueryState(
@@ -135,7 +136,7 @@ export function Thread() {
     _setThreadId(id);
 
     // close artifact and reset artifact context
-    closeArtifact();
+    setArtifactOpen(false);
     setArtifactContext({});
   };
 
@@ -235,30 +236,32 @@ export function Thread() {
 
   return (
     <div className="flex h-screen w-full overflow-hidden">
-      <div className="relative hidden lg:flex">
-        <motion.div
-          className="absolute z-20 h-full overflow-hidden border-r bg-white"
-          style={{ width: 300 }}
-          animate={
-            isLargeScreen
-              ? { x: chatHistoryOpen ? 0 : -300 }
-              : { x: chatHistoryOpen ? 0 : -300 }
-          }
-          initial={{ x: -300 }}
-          transition={
-            isLargeScreen
-              ? { type: "spring", stiffness: 300, damping: 30 }
-              : { duration: 0 }
-          }
-        >
-          <div
-            className="relative h-full"
+      {FEATURES.CHAT_HISTORY && (
+        <div className="relative hidden lg:flex">
+          <motion.div
+            className="absolute z-20 h-full overflow-hidden border-r bg-white"
             style={{ width: 300 }}
+            animate={
+              isLargeScreen
+                ? { x: chatHistoryOpen ? 0 : -300 }
+                : { x: chatHistoryOpen ? 0 : -300 }
+            }
+            initial={{ x: -300 }}
+            transition={
+              isLargeScreen
+                ? { type: "spring", stiffness: 300, damping: 30 }
+                : { duration: 0 }
+            }
           >
-            <ThreadHistory />
-          </div>
-        </motion.div>
-      </div>
+            <div
+              className="relative h-full"
+              style={{ width: 300 }}
+            >
+              <ThreadHistory />
+            </div>
+          </motion.div>
+        </div>
+      )}
 
       <div
         className={cn(
@@ -338,13 +341,13 @@ export function Thread() {
                     damping: 30,
                   }}
                 >
-                  <LangGraphLogoSVG
+                  {/* <LangGraphLogoSVG
                     width={32}
                     height={32}
                   />
                   <span className="text-xl font-semibold tracking-tight">
                     Agent Chat
-                  </span>
+                  </span> */}
                 </motion.button>
               </div>
 
@@ -414,9 +417,24 @@ export function Thread() {
                 <div className="sticky bottom-0 flex flex-col items-center gap-8 bg-white">
                   {!chatStarted && (
                     <div className="flex items-center gap-3">
-                      <LangGraphLogoSVG className="h-8 flex-shrink-0" />
+                      {UI_CONFIG.LOGO.USE_CUSTOM ? (
+                        <>
+                          <img 
+                            src={UI_CONFIG.LOGO.LIGHT} 
+                            alt={UI_CONFIG.APP_NAME} 
+                            className="h-8 flex-shrink-0 dark:hidden" 
+                          />
+                          <img 
+                            src={UI_CONFIG.LOGO.DARK} 
+                            alt={UI_CONFIG.APP_NAME} 
+                            className="h-8 flex-shrink-0 hidden dark:block" 
+                          />
+                        </>
+                      ) : (
+                        <LangGraphLogoSVG className="h-8 flex-shrink-0" />
+                      )}
                       <h1 className="text-2xl font-semibold tracking-tight">
-                        Agent Chat
+                        {UI_CONFIG.APP_NAME}
                       </h1>
                     </div>
                   )}
@@ -444,7 +462,7 @@ export function Thread() {
                             form?.requestSubmit();
                           }
                         }}
-                        placeholder="Type your message..."
+                        placeholder={UI_CONFIG.CHAT.PLACEHOLDER}
                         className="field-sizing-content resize-none border-none bg-transparent p-3.5 pb-0 shadow-none ring-0 outline-none focus:ring-0 focus:outline-none"
                       />
 
@@ -468,14 +486,16 @@ export function Thread() {
                           <Button
                             key="stop"
                             onClick={() => stream.stop()}
+                            variant="secondary"
+                            className="font-medium"
                           >
-                            <LoaderCircle className="h-4 w-4 animate-spin" />
+                            <LoaderCircle className="h-4 w-4 animate-spin mr-2" />
                             Cancel
                           </Button>
                         ) : (
                           <Button
                             type="submit"
-                            className="shadow-md transition-all"
+                            className="shadow-md transition-all font-medium"
                             disabled={isLoading || !input.trim()}
                           >
                             Send
@@ -494,7 +514,7 @@ export function Thread() {
             <div className="grid grid-cols-[1fr_auto] border-b p-4">
               <ArtifactTitle className="truncate overflow-hidden" />
               <button
-                onClick={closeArtifact}
+                onClick={() => setArtifactOpen(false)}
                 className="cursor-pointer"
               >
                 <XIcon className="size-5" />
@@ -504,6 +524,26 @@ export function Thread() {
           </div>
         </div>
       </div>
+
+      {FEATURES.ARTIFACT_PANEL && artifactOpen && (
+        <div className={cn("absolute inset-0 z-30 overflow-hidden bg-background")}>
+          <div className="grid h-full w-full overflow-hidden rounded-lg border">
+            <div className="scrollbar-custom flex h-full w-full flex-1 flex-col overflow-scroll p-4">
+              <div className="mb-2 flex items-center justify-between">
+                <ArtifactTitle />
+                <Button
+                  variant="ghost"
+                  className="h-auto rounded-full p-1"
+                  onClick={() => setArtifactOpen(false)}
+                >
+                  <XIcon className="size-4" />
+                </Button>
+              </div>
+              <ArtifactContent />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

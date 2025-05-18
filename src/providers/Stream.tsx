@@ -24,6 +24,7 @@ import { PasswordInput } from "@/components/ui/password-input";
 import { getApiKey } from "@/lib/api-key";
 import { useThreads } from "./Thread";
 import { toast } from "sonner";
+import { AGENT_CONFIG, UI_CONFIG } from "@/config";
 
 export type StateType = { messages: Message[]; ui?: UIMessage[] };
 
@@ -125,17 +126,16 @@ const StreamSession = ({
   );
 };
 
-// Default values for the form
-const DEFAULT_API_URL = "http://localhost:2024";
-const DEFAULT_ASSISTANT_ID = "agent";
+// Default values from the configuration
+const DEFAULT_API_URL = AGENT_CONFIG.DEFAULT_API_URL;
+const DEFAULT_ASSISTANT_ID = AGENT_CONFIG.DEFAULT_ASSISTANT_ID;
 
 export const StreamProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
-  // Get environment variables
-  const envApiUrl: string | undefined = process.env.NEXT_PUBLIC_API_URL;
-  const envAssistantId: string | undefined =
-    process.env.NEXT_PUBLIC_ASSISTANT_ID;
+  // Get values from the centralized configuration
+  const envApiUrl: string | undefined = AGENT_CONFIG.API_URL;
+  const envAssistantId: string | undefined = AGENT_CONFIG.ASSISTANT_ID;
 
   // Use URL params with env var fallbacks
   const [apiUrl, setApiUrl] = useQueryState("apiUrl", {
@@ -169,11 +169,14 @@ export const StreamProvider: React.FC<{ children: ReactNode }> = ({
             <div className="flex flex-col items-start gap-2">
               <LangGraphLogoSVG className="h-7" />
               <h1 className="text-xl font-semibold tracking-tight">
-                Agent Chat
+                {UI_CONFIG.APP_NAME}
               </h1>
             </div>
             <p className="text-muted-foreground">
-              Welcome to Agent Chat! Before you get started, you need to enter
+              {UI_CONFIG.APP_DESCRIPTION}
+            </p>
+            <p className="text-muted-foreground">
+              Before you get started, you need to enter
               the URL of the deployment and the assistant / graph ID.
             </p>
           </div>

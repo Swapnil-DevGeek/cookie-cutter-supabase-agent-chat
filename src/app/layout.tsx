@@ -3,6 +3,7 @@ import "./globals.css";
 import { Inter } from "next/font/google";
 import React from "react";
 import { NuqsAdapter } from "nuqs/adapters/next/app";
+import { AuthProvider } from "@/providers/Auth";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -11,8 +12,8 @@ const inter = Inter({
 });
 
 export const metadata: Metadata = {
-  title: "Agent Inbox",
-  description: "Agent Inbox UX by LangChain",
+  title: "Next-Supabase-Agent-chat Cookie cutter",
+  description: "A cookie cutter platform for building agent orchestration platforms with Next.js, Supabase, and Nuqs",
 };
 
 export default function RootLayout({
@@ -23,7 +24,11 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={inter.className}>
-        <NuqsAdapter>{children}</NuqsAdapter>
+        <NuqsAdapter>
+          <AuthProvider>
+            {children}
+          </AuthProvider>
+        </NuqsAdapter>
       </body>
     </html>
   );
